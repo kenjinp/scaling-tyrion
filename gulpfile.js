@@ -15,7 +15,7 @@ var notify = require('gulp-notify'),
     sass = require('gulp-sass'),
     autoprefix = require('gulp-autoprefixer'),
     minifyCSS = require('gulp-minify-css'),
-    browserify = require('browserify'),
+    browserify = require('gulp-browserify'),
     watchify = require('watchify'),
     reactify = require('reactify'),
     mocha = require('gulp-mocha'),
@@ -77,27 +77,14 @@ gulp.task('htmlpage', function() {
     .pipe(gulp.dest(htmlDst));
 });
 
-gulp.task('buildScript', function() {
-  return browserify({
-    entries: [scriptDir + '/'+ appEntryPoint], debug: true
-  })
-    .transform(reactify)
-    .bundle()
-    .pipe(source(appEntryPoint))
-    .pipe(gulp.dest(buildDir))
-    //.pipe(stripDebug())
-    //.pipe(uglify())
-    .pipe(notify('Bundling Done.'));
-});
-
 //DEV
 //JS concat, strip debugging then minify
 gulp.task('scripts_dev', function() {
   var scriptSrc = ['./src/scripts/app.js'],
       scriptDst = './dis/scripts/';
   gulp.src(scriptSrc)
-    .pipe(browserify())
-    .pipe(reactify({reactTools: reactTools}))
+    //.pipe(browserify())
+    //pipe(reactify({reactTools: reactTools}))
     .pipe(concat('app.js'))
     //.pipe(stripDebug())
     //.pipe(uglify())
@@ -110,7 +97,7 @@ gulp.task('scripts_prod', function() {
   var scriptSrc = ['./src/scripts/app.js'],
       scriptDst = './dis/scripts/';
   gulp.src(scriptSrc)
-    .pipe(browserify())
+    //.pipe(browserify())
     .pipe(concat('app.js'))
     .pipe(stripDebug())
     .pipe(uglify())
@@ -136,7 +123,7 @@ gulp.task('connect', function() {
 });
 
 //default gulp task
-gulp.task('default', ['connect','imagemin', 'htmlpage', 'buildScript', 'styles'], function() {
+gulp.task('default', ['connect','imagemin', 'htmlpage', 'scripts_dev', 'styles'], function() {
   //watch for HTMl changes
   gulp.watch('./src/*.html', ['htmlpage']);
   //watch for JS changes
@@ -146,7 +133,7 @@ gulp.task('default', ['connect','imagemin', 'htmlpage', 'buildScript', 'styles']
 });
 
 //default gulp task
-gulp.task('prod', ['imagemin', 'htmlpage', 'buildScript', 'styles'], function() {
+gulp.task('prod', ['imagemin', 'htmlpage', 'scripts_prod', 'styles'], function() {
   //watch for HTMl changes
   gulp.watch('./src/*.html', ['htmlpage']);
   //watch for JS changes

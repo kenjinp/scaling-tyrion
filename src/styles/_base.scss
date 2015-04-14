@@ -2,11 +2,21 @@
 $font-stack: Helvetica, sans-serif;
 
 // Colors
-$background:    #1abc89;
+$background:    #53E17D;
+$card:          #8CF0A9;
+$card-border:   #63AA78;
 $white:         #ffffff;
 
 body {
   background-color: $background;
   background-size: cover;
   color: $white;
+}
+
+button {
+  -webkit-appearance: none;
+  background-color: $card-border;
+  border: none;
+  border-radius: 5px;
+  padding: 20px;
 }
