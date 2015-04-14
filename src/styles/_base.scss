@@ -6,6 +6,8 @@ $background:    #53E17D;
 $card:          #8CF0A9;
 $card-border:   #63AA78;
 $white:         #ffffff;
+$text:          #74736f;
+$warning:       #fc9929;
 
 body {
   background-color: $background;
@@ -19,4 +21,14 @@ button {
   border: none;
   border-radius: 5px;
   padding: 20px;
+}
+
+ul {
+  padding:0;
+  margin:0;
+  text-align:center;
+}
+
+li {
+  display: block;
 }

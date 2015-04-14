@@ -83,7 +83,7 @@ gulp.task('scripts_dev', function() {
   var scriptSrc = ['./src/scripts/app.js'],
       scriptDst = './dis/scripts/';
   gulp.src(scriptSrc)
-    //.pipe(browserify())
+    .pipe(browserify())
     //pipe(reactify({reactTools: reactTools}))
     .pipe(concat('app.js'))
     //.pipe(stripDebug())
@@ -97,7 +97,7 @@ gulp.task('scripts_prod', function() {
   var scriptSrc = ['./src/scripts/app.js'],
       scriptDst = './dis/scripts/';
   gulp.src(scriptSrc)
-    //.pipe(browserify())
+    .pipe(browserify())
     .pipe(concat('app.js'))
     .pipe(stripDebug())
     .pipe(uglify())

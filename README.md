@@ -11,8 +11,6 @@ Game:
 
 Goals:
 
--use only native javascript
-
 -Visualize the scoring of the game.
 
 -Create a method that randomly throws a roll (one roll is 1-10 pins knocked down), and progresses the scoring.
