@@ -9400,18 +9400,24 @@ var startGame = function() {
   bowling.handleScores = function(currentFrame) {
     if (currentFrame[0] !== null) {
       $('.first-score:eq(' + bowling.frameIndex + ')').text(currentFrame[0]);
-    } if(currentFrame[1] !== null) {
+    }
+
+    if(currentFrame[1] !== null) {
       $('.second-score:eq(' + bowling.frameIndex + ')').text(currentFrame[1]);
-    } if(currentFrame[3] !== null) {
-      $('.msg:eq(' + bowling.frameIndex + ')').text(currentFrame[1]);
-      //$('.msg:eq(' + bowling.frameIndex + ')').show(slow);
+    }
+
+    if (currentFrame[0] === 10) {
+      $('.msg:eq(' + bowling.frameIndex + ')').text('X');
+    } else if (currentFrame[0] + currentFrame[1] === 10) {
+      $('.msg:eq(' + bowling.frameIndex + ')').text('S');
     }
   };
 
   //when a frame's total has been calculated, ouput it to the visualization
   bowling.handleFrameScoreOutput = function(currentFrame, index) {
-    if(currentFrame[2] !== null)
+    if (currentFrame[2] !== null)
       $('.turn-score:eq(' + index + ')').text(currentFrame[2]);
+
     if (bowling.frames.length > 10) {
       $('.third-score').text(bowling.frames[10][1]);
       $('#bowl').text('finish!');

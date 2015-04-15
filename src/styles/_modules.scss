@@ -71,11 +71,10 @@
     right:5px;
   }
   .msg {
+    bottom: 4px;
     position:absolute;
-    top:-5;
-    left: -5;
-    font-size:28px;
+    left: 4px;
+    font-size:24px;
     color: $warning;
-    transform: rotate(-45deg);
   }
 }
