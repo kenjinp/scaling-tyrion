@@ -6,7 +6,7 @@ var Game = (function() {
     this.frameIndex = 0;
     this.setPins();
     this.score = 0;
-  };
+  }
 
   //handle player input
   Game.prototype.roll = function() {
@@ -14,13 +14,16 @@ var Game = (function() {
     if (this.frames.length === 10 && this.frames[9][3] === null) {
       this.handleMessages('game over');
       return;
+    } else if (this.frames.length === 11) {
+      this.handleMessages('game over');
+      return;
     } else if (this.frames.length === 10 && this.frames[9][3] !== null) {
-      this.handleMessages('you bowled a ' + pins);
+      this.handleMessages('you bowled ' + pins);
       this.ball = 2;
       this.playFrame(pins);
-      return pins
+      return pins;
     } else {
-      this.handleMessages('you bowled a ' + pins);
+      this.handleMessages('you bowled ' + pins);
       this.playFrame(pins);
       return pins;
     }
@@ -84,11 +87,11 @@ var Game = (function() {
       default:
         break;
     }
-  }
+  };
 
   //handle messages
   Game.prototype.handleMessages = function(message) {
-    return msg
+    return msg;
   };
 
   //handles scores for each ball roll
@@ -104,7 +107,9 @@ var Game = (function() {
 
   //handles scores for each frame
   Game.prototype.handleFrameScore = function() {
+    //reset score, it will be counted up during each frame;
     this.score = 0;
+    //set the current frame's score if not a special case
     if (this.currentFrame[3] === null) {
       this.currentFrame[2] = this.currentFrame[1] + this.currentFrame[0];
       this.handleFrameScoreOutput(this.currentFrame, this.frameIndex);
@@ -113,7 +118,7 @@ var Game = (function() {
     for (var i = this.frames.length - 1; i > 0; i--) {
       if (this.frames[i-1] !== undefined && this.frames[i-1][3] === 'spare') {
         this.frames[i-1][2] = this.frames[i][2] + 10;
-        this.handleFrameScoreOutput(this.frames[i - 1], i - 1)
+        this.handleFrameScoreOutput(this.frames[i - 1], i - 1);
       }
       if (this.frames[i-2] !== undefined && this.frames[i-2][3] === 'strike') {
           if (this.frames[i-1][3] === null) {
@@ -122,6 +127,15 @@ var Game = (function() {
             this.frames[i-2][2] = this.frames[i][2] + 20;
           }
           this.handleFrameScoreOutput(this.frames[i-2], i - 2);
+      }
+      //the only case we have to correct for is strikes at end
+      if (i === 10 && this.frames[i-1][3] === 'strike') {
+        this.frames[i - 1][2] == 10 + this.frames[i][1];
+        this.handleFrameScoreOutput(this.frames[i - 1], i - 1);
+      }
+      if (i === 9 && this.frames[8][3] === 'strike'){
+        this.frames[8][2] = 10 + this.frames[9][2];
+        this.handleFrameScoreOutput(this.frames[8], 8);
       }
       this.score += this.frames[i][2];
     }

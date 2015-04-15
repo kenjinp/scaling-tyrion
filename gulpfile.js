@@ -39,11 +39,7 @@ function handleErrors() {
 //JS hint task
 gulp.task('jshint', function() {
   gulp.src([
-    './src/scripts/*.js',
-     './src/scripts/spec/*.js',
-     './src/scripts/spec/modules/*.js',
-     './src/scripts/spec/integration/*.js',
-     './src/scripts/spec/integration/modules*.js'
+    './src/scripts/*.js'
   ])
     .pipe(jshint())
     .pipe(jshint.reporter('default'));

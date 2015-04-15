@@ -9214,7 +9214,7 @@ var Game = (function() {
     this.frameIndex = 0;
     this.setPins();
     this.score = 0;
-  };
+  }
 
   //handle player input
   Game.prototype.roll = function() {
@@ -9222,13 +9222,16 @@ var Game = (function() {
     if (this.frames.length === 10 && this.frames[9][3] === null) {
       this.handleMessages('game over');
       return;
+    } else if (this.frames.length === 11) {
+      this.handleMessages('game over');
+      return;
     } else if (this.frames.length === 10 && this.frames[9][3] !== null) {
-      this.handleMessages('you bowled a ' + pins);
+      this.handleMessages('you bowled ' + pins);
       this.ball = 2;
       this.playFrame(pins);
-      return pins
+      return pins;
     } else {
-      this.handleMessages('you bowled a ' + pins);
+      this.handleMessages('you bowled ' + pins);
       this.playFrame(pins);
       return pins;
     }
@@ -9292,11 +9295,11 @@ var Game = (function() {
       default:
         break;
     }
-  }
+  };
 
   //handle messages
   Game.prototype.handleMessages = function(message) {
-    return msg
+    return msg;
   };
 
   //handles scores for each ball roll
@@ -9312,34 +9315,18 @@ var Game = (function() {
 
   //handles scores for each frame
   Game.prototype.handleFrameScore = function() {
+    //reset score, it will be counted up during each frame;
     this.score = 0;
+    //set the current frame's score if not a special case
     if (this.currentFrame[3] === null) {
       this.currentFrame[2] = this.currentFrame[1] + this.currentFrame[0];
       this.handleFrameScoreOutput(this.currentFrame, this.frameIndex);
     }
-    //if (this.currentFrame[3] !== null &&
-    //  this.frames[this.frameIndex - 1] !== null) {
-    //  console.log('defer scoring til next frame');
-    //}
     //loop evey time there goes to next frame
     for (var i = this.frames.length - 1; i > 0; i--) {
-    //  if (this.frames[i][3] !== null && this.frames[i][3] === 'spare'){
-    //    console.log('frame+1: ' + this.frames[i+1]);
-    //    if (this.frames[i+1] !== undefined && this.frames[i+1][3] !== null) {
-    //      this.frames[i][2] = 10 + this.frames[i+1][2];
-    //      this.handleFrameScoreOutput(this.frames[i], i);
-    //    } else if (this.frames[i+1] !== undefined) {
-    //      console.log('THIS IS WHERE POINTS SHOULD ADDED');
-    //      this.frames[i][2] = 10 + this.frames[i+1][2];
-    //      this.handleFrameScoreOutput(this.frames[i], i);
-    //    } else if (this.frames[i+1] === undefined && i === 9) {
-      //    this.frames[i][2] = 10 + this.frames[i+1][2];
-      //    this.handleFrameScoreOutput(this.frames[i], i);
-      //  }
-    //  }
       if (this.frames[i-1] !== undefined && this.frames[i-1][3] === 'spare') {
         this.frames[i-1][2] = this.frames[i][2] + 10;
-        this.handleFrameScoreOutput(this.frames[i - 1], i - 1)
+        this.handleFrameScoreOutput(this.frames[i - 1], i - 1);
       }
       if (this.frames[i-2] !== undefined && this.frames[i-2][3] === 'strike') {
           if (this.frames[i-1][3] === null) {
@@ -9349,12 +9336,20 @@ var Game = (function() {
           }
           this.handleFrameScoreOutput(this.frames[i-2], i - 2);
       }
+      //the only case we have to correct for is strikes at end
+      if (i === 10 && this.frames[i-1][3] === 'strike') {
+        this.frames[i - 1][2] == 10 + this.frames[i][1];
+        this.handleFrameScoreOutput(this.frames[i - 1], i - 1);
+      }
+      if (i === 9 && this.frames[8][3] === 'strike'){
+        this.frames[8][2] = 10 + this.frames[9][2];
+        this.handleFrameScoreOutput(this.frames[8], 8);
+      }
       this.score += this.frames[i][2];
     }
   };
 
   Game.prototype.handleNewFrame = function() {
-
   };
 
   return Game;
@@ -9367,11 +9362,13 @@ module.exports = Game;
 //bowling
 'use strict';
 
+//require jquery for browserify
 global.jQuery = global.$ = require('jquery');
+//load up our game module
 var Game = require('./bowling');
 
 var startGame = function() {
-  $('.content').children().remove()
+  $('.content').children().remove();
   $('.content').append(gameCard);
 
   var bowling = new Game();
@@ -9387,50 +9384,58 @@ var startGame = function() {
 
   $('.score-box:eq(0)').addClass('active');
 
+  //after each change of frame
   bowling.handleNewFrame = function() {
     $('.score-box').each(function() {
       $(this).removeClass('active');
-    })
-    $('.score-box:eq('+[bowling.frameIndex]+')').addClass('active');
-  }
+    });
+    if (bowling.frameIndex < 10) {
+      $('.score-box:eq(' + [bowling.frameIndex] + ')').addClass('active');
+    } else {
+      $('.score-box:eq(9)').addClass('active');
+    }
+  };
 
-  //overide score showing
+  //overide score showing for each ball's score
   bowling.handleScores = function(currentFrame) {
-    console.log(currentFrame);
-    console.log(bowling.frameIndex);
-    //$('.msg:eq(' + bowling.frameIndex + ')').hide();
     if (currentFrame[0] !== null) {
       $('.first-score:eq(' + bowling.frameIndex + ')').text(currentFrame[0]);
     } if(currentFrame[1] !== null) {
       $('.second-score:eq(' + bowling.frameIndex + ')').text(currentFrame[1]);
     } if(currentFrame[3] !== null) {
-      console.log(currentFrame[3]);
       $('.msg:eq(' + bowling.frameIndex + ')').text(currentFrame[1]);
       //$('.msg:eq(' + bowling.frameIndex + ')').show(slow);
     }
-   }
+  };
 
+  //when a frame's total has been calculated, ouput it to the visualization
   bowling.handleFrameScoreOutput = function(currentFrame, index) {
     if(currentFrame[2] !== null)
       $('.turn-score:eq(' + index + ')').text(currentFrame[2]);
+    if (bowling.frames.length > 10) {
+      $('.third-score').text(bowling.frames[10][1]);
+      $('#bowl').text('finish!');
+    }
   };
 
   //overide message handling
   bowling.handleMessages = function(msg) {
-    console.log(msg);
     $('.messages').text(msg);
     if (msg === 'game over') {
       $('.messages').text('Game Over! you scored ' + bowling.score + ' points!');
       $('#bowl').text('restart');
       $('#bowl').on('click', function() {
         location.reload();
-      })
+      });
     }
-  }
+  };
 
+  //whenever we click, it will activate
+  //the game's input function and progress the game
   $('#bowl').on('click', function() {
     bowling.roll();
-  })
+  });
+
 };
 
 var start = document.getElementById('start');
@@ -9449,7 +9454,6 @@ var scoreBoxLast = '<li class="score-box">' +
                '<span class="msg"></span>' +
                '</li>';
 
-//var scoreBox = document.getElementsByClassName('score-box')[0];
 gameCard.parentNode.removeChild(gameCard);
 start.addEventListener('click', function() {
   startGame();
