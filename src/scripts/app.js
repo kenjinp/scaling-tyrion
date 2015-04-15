@@ -9,9 +9,24 @@ var startGame = function() {
   $('.content').append(gameCard);
 
   var bowling = new Game();
-  $('.score-holder').append(scoreBox);
 
+  //set up frames!
+  for (var i = 0; i < 10; i++) {
+    if (i == 9) {
+      $('.score-holder').append(scoreBoxLast);
+    } else {
+      $('.score-holder').append(scoreBox);
+    }
+  }
 
+  $('.score-box:eq(0)').addClass('active');
+
+  bowling.handleNewFrame = function() {
+    $('.score-box').each(function() {
+      $(this).removeClass('active');
+    })
+    $('.score-box:eq('+[bowling.frameIndex]+')').addClass('active');
+  }
 
   //overide score showing
   bowling.handleScores = function(currentFrame) {
@@ -29,15 +44,9 @@ var startGame = function() {
     }
    }
 
-  //overide when frames are changed
-  bowling.handleNewFrame = function() {
-    if (bowling.frameIndex < 10)
-      $('.score-holder').append(scoreBox);
-  }
-
-  bowling.handleFrameScoreOutput = function() {
-    if(bowling.currentFrame[2] !== null)
-      $('.turn-score:eq(' + bowling.frameIndex + ')').text(bowling.currentFrame[2]);
+  bowling.handleFrameScoreOutput = function(currentFrame, index) {
+    if(currentFrame[2] !== null)
+      $('.turn-score:eq(' + index + ')').text(currentFrame[2]);
   };
 
   //overide message handling
@@ -54,20 +63,26 @@ var startGame = function() {
   }
 
   $('#bowl').on('click', function() {
-    console.log(bowling.frames.length);
-    console.log('clicked');
-    console.log(bowling.roll());
+    bowling.roll();
   })
 };
 
 var start = document.getElementById('start');
 var gameCard = document.getElementById('game-card');
-var scoreBox = '<li class="score-box active">' +
+var scoreBox = '<li class="score-box">' +
                   '<span class="first-score"></span>' +
                   '<span class="second-score"></span>' +
                   '<span class="turn-score"></span>' +
                   '<span class="msg"></span>' +
-                  '</li>'
+                  '</li>';
+var scoreBoxLast = '<li class="score-box">' +
+               '<span class="first-score"></span>' +
+               '<span class="second-score"></span>' +
+               '<span class="third-score"></span>' +
+               '<span class="turn-score"></span>' +
+               '<span class="msg"></span>' +
+               '</li>';
+
 //var scoreBox = document.getElementsByClassName('score-box')[0];
 gameCard.parentNode.removeChild(gameCard);
 start.addEventListener('click', function() {

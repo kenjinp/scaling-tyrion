@@ -22,8 +22,30 @@
   position: relative;
   box-shadow: 0 8px 6px -6px $card-border;
   text-align: center;
+  border: 1px solid $white;
   &.active {
     border: 1px solid $warning;
+  }
+  &:last-child{
+    width:90px;
+    .second-score {
+      padding: 5px 10px;
+      position: absolute;
+      height: 20px;
+      right: 31px;
+      border-left: 1px solid $text;
+      border-bottom: 1px solid $text;
+      width: 10px;
+    }
+    .third-score {
+      padding: 5px 10px;
+      position: absolute;
+      height: 20px;
+      right: 0;
+      border-left: 1px solid $text;
+      border-bottom: 1px solid $text;
+      width: 10px;
+    }
   }
   .first-score {
     left: 0;
@@ -46,6 +68,7 @@
     position:absolute;
     bottom:5px;
     font-size: 28px;
+    right:5px;
   }
   .msg {
     position:absolute;
