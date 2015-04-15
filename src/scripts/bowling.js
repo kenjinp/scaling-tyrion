@@ -128,23 +128,30 @@ var Game = (function() {
           }
           this.handleFrameScoreOutput(this.frames[i-2], i - 2);
       }
-      //the only case we have to correct for is strikes at end
+      //Outlier Cases
+      //if strike is at the end
       if (i === 10 && this.frames[i-1][3] === 'strike') {
         this.frames[i - 1][2] == 10 + this.frames[i][1];
         this.handleFrameScoreOutput(this.frames[i - 1], i - 1);
       }
+      //if strike is next to last frame
       if (i === 9 && this.frames[8][3] === 'strike'){
         this.frames[8][2] = 10 + this.frames[9][2];
         this.handleFrameScoreOutput(this.frames[8], 8);
       }
+      //count up all the scores each round,
+      //this is done because scoring is rendered often after each
+      //frame has passed
       this.score += this.frames[i][2];
     }
   };
 
+  //empty function that is called when new frame is passed
   Game.prototype.handleNewFrame = function() {
   };
 
   return Game;
+  
 })();
 
 module.exports = Game;

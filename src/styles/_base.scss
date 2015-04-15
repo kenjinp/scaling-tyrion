@@ -2,10 +2,11 @@
 $font-stack: Helvetica, sans-serif;
 
 // Colors
-$background:    #53E17D;
-$card:          #8CF0A9;
-$card-border:   #63AA78;
-$white:         #ffffff;
+$background:    #53e17d;
+$card:          #8cf0a9;
+$card-border:   #63aa78;
+$dark-green:    #28663b;
+$white:            #fff;
 $text:          #74736f;
 $warning:       #fc9929;
 
@@ -16,18 +17,34 @@ body {
 }
 
 button {
-  -webkit-appearance: none;
+  -webkit-appearance: 0;
   background-color: $card-border;
-  border: none;
+  border: 0;
   border-radius: 5px;
-  padding: 20px;
+  box-shadow: 0 2px 0 0 $dark-green;
   margin: 20px;
+  padding: 20px;
+  position: relative;
+
+  &:focus {
+    outline: 0;
+  }
+
+  &:active {
+    box-shadow: none;
+    top: 2px;
+  }
+}
+
+h1,
+h2 {
+  text-shadow: 0 1px 1px $card-border;
 }
 
 ul {
-  padding:0;
-  margin:0;
-  text-align:center;
+  margin: 0;
+  padding: 0;
+  text-align: center;
 }
 
 li {
