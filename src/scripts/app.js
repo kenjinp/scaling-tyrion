@@ -31,14 +31,21 @@ var startGame = function() {
 
   //overide when frames are changed
   bowling.handleNewFrame = function() {
-    $('.score-holder').append(scoreBox);
+    if (bowling.frameIndex < 10)
+      $('.score-holder').append(scoreBox);
   }
+
+  bowling.handleFrameScoreOutput = function() {
+    if(bowling.currentFrame[2] !== null)
+      $('.turn-score:eq(' + bowling.frameIndex + ')').text(bowling.currentFrame[2]);
+  };
 
   //overide message handling
   bowling.handleMessages = function(msg) {
     console.log(msg);
     $('.messages').text(msg);
     if (msg === 'game over') {
+      $('.messages').text('Game Over! you scored ' + bowling.score + ' points!');
       $('#bowl').text('restart');
       $('#bowl').on('click', function() {
         location.reload();

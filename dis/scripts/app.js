@@ -9213,6 +9213,7 @@ var Game = (function() {
     this.frames = [];
     this.frameIndex = 0;
     this.setPins();
+    this.score = 0;
   };
 
   //handle player input
@@ -9243,6 +9244,11 @@ var Game = (function() {
     var that = this;
 
     function nextFrame() {
+      if (that.currentFrame[3] === null)
+        that.handleFrameScore();
+      if (that.currentFrame[3] !== null && that.frames[that.frameIndex - 1] !== null) {
+        console.log('defer scoring til next frame');
+      }
       that.frames.push(that.currentFrame);
       that.frameIndex += 1;
       that.setPins();
@@ -9293,9 +9299,22 @@ var Game = (function() {
     return msg
   };
 
+  //handles scores for each ball roll
   Game.prototype.handleScores = function(currentFrame) {
     return currentFrame;
 
+  };
+
+  //handles scores for each frame
+  Game.prototype.handleFrameScoreOutput = function() {
+
+  };
+
+  //handles scores for each frame
+  Game.prototype.handleFrameScore = function() {
+    this.currentFrame[2] = this.currentFrame[1] + this.currentFrame[0];
+    this.score += this.currentFrame[2];
+    this.handleFrameScoreOutput();
   };
 
   Game.prototype.handleNewFrame = function() {
@@ -9342,14 +9361,21 @@ var startGame = function() {
 
   //overide when frames are changed
   bowling.handleNewFrame = function() {
-    $('.score-holder').append(scoreBox);
+    if (bowling.frameIndex < 10)
+      $('.score-holder').append(scoreBox);
   }
+
+  bowling.handleFrameScoreOutput = function() {
+    if(bowling.currentFrame[2] !== null)
+      $('.turn-score:eq(' + bowling.frameIndex + ')').text(bowling.currentFrame[2]);
+  };
 
   //overide message handling
   bowling.handleMessages = function(msg) {
     console.log(msg);
     $('.messages').text(msg);
     if (msg === 'game over') {
+      $('.messages').text('Game Over! you scored ' + bowling.score + ' points!');
       $('#bowl').text('restart');
       $('#bowl').on('click', function() {
         location.reload();

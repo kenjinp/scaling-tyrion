@@ -5,6 +5,7 @@ var Game = (function() {
     this.frames = [];
     this.frameIndex = 0;
     this.setPins();
+    this.score = 0;
   };
 
   //handle player input
@@ -35,6 +36,11 @@ var Game = (function() {
     var that = this;
 
     function nextFrame() {
+      if (that.currentFrame[3] === null)
+        that.handleFrameScore();
+      if (that.currentFrame[3] !== null && that.frames[that.frameIndex - 1] !== null) {
+        console.log('defer scoring til next frame');
+      }
       that.frames.push(that.currentFrame);
       that.frameIndex += 1;
       that.setPins();
@@ -85,9 +91,22 @@ var Game = (function() {
     return msg
   };
 
+  //handles scores for each ball roll
   Game.prototype.handleScores = function(currentFrame) {
     return currentFrame;
 
+  };
+
+  //handles scores for each frame
+  Game.prototype.handleFrameScoreOutput = function() {
+
+  };
+
+  //handles scores for each frame
+  Game.prototype.handleFrameScore = function() {
+    this.currentFrame[2] = this.currentFrame[1] + this.currentFrame[0];
+    this.score += this.currentFrame[2];
+    this.handleFrameScoreOutput();
   };
 
   Game.prototype.handleNewFrame = function() {
